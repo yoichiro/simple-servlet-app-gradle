@@ -1,14 +1,18 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url uri('__LOCAL_MAVEN_REPOSITORY_PATH__')
+        }
     }
     dependencies {
-        classpath 'org.akhikhl.gretty:gretty:+'
+        classpath group: 'com.microsoft.azure', name: 'azure-webapp-gradle-plugin', version: '1.0-SNAPSHOT'
     }
 }
 
 apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
+apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
+apply plugin: 'com.microsoft.azure.azurewebapp'
 
 repositories {
     jcenter()
@@ -20,3 +24,22 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
+
+azureWebApp {
+    resourceGroup = '__RESOURCE_GROUP_NAME__'
+    appName = '__APP_NAME__'
+    pricingTier = '__PRICING_TIER_NAME__'
+    region = '__LOCATION_NAME__'
+    appService = {
+        type = 'windows'
+        javaWebContainer = 'tomcat 8.5'
+        javaVersion = '1.8'
+    }
+    authentication = {
+        type = 'azurecli'
+    }
+    deployment = {
+        type = 'war'
+    }
+}
+
